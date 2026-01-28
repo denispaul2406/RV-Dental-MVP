@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect, useRef } from "react";
+import { useState, useCallback, useEffect, useRef, Suspense } from "react";
 import ImageViewer from "@/components/diagnostics/ImageViewer";
 import SuitabilityMeter from "@/components/diagnostics/SuitabilityMeter";
 import { calculateANB, Point } from "@/lib/geometry";
@@ -13,7 +13,7 @@ import { db } from "@/lib/firebase";
 import { collection, doc, getDoc, updateDoc, serverTimestamp } from "firebase/firestore";
 import { useAuth } from "@/components/providers/AuthProvider";
 
-export default function AnalysisPage() {
+function AnalysisPageContent() {
     const { user } = useAuth();
     const searchParams = useSearchParams();
     const scanId = searchParams.get("id");
@@ -229,7 +229,7 @@ export default function AnalysisPage() {
                         <ArrowLeft size={20} />
                     </Link>
                     <div>
-                        <h1 className="text-2xl font-bold">Analysis Results</h1>
+                        <h1 className="text-2xl font-heading font-bold">Analysis Results</h1>
                         <p className="text-sm text-muted-foreground">{patientDetails.name} {patientDetails.age ? `• ${patientDetails.age} yrs` : ""} {patientDetails.gender ? `• ${patientDetails.gender}` : ""}</p>
                     </div>
                 </div>
@@ -335,7 +335,7 @@ export default function AnalysisPage() {
 
                     {/* Clinical Criteria Checklist */}
                     <div className="glass-card p-6 rounded-2xl space-y-4">
-                        <h3 className="font-semibold text-lg border-b border-border pb-2">Clinical Criteria</h3>
+                        <h3 className="font-heading font-semibold text-lg border-b border-border pb-2">Clinical Criteria</h3>
                         <div className="space-y-3">
                             <div className="flex items-center justify-between">
                                 <span className="text-sm">ANB &gt; 4.5°</span>
@@ -373,7 +373,7 @@ export default function AnalysisPage() {
                     </div>
 
                     <div className="glass-card p-6 rounded-2xl space-y-4">
-                        <h3 className="font-semibold text-lg border-b border-border pb-2">Analysis Details</h3>
+                        <h3 className="font-heading font-semibold text-lg border-b border-border pb-2">Analysis Details</h3>
                         <div className="space-y-3">
                             <div className="flex justify-between items-center text-sm">
                                 <span className="text-muted-foreground">Skeletal Class</span>
@@ -402,5 +402,17 @@ export default function AnalysisPage() {
                 </div>
             </div>
         </div>
+    );
+}
+
+export default function AnalysisPage() {
+    return (
+        <Suspense fallback={
+            <div className="flex items-center justify-center h-screen">
+                <Loader2 className="animate-spin h-8 w-8 text-primary" />
+            </div>
+        }>
+            <AnalysisPageContent />
+        </Suspense>
     );
 }

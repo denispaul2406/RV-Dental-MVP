@@ -15,7 +15,7 @@ export default function LandingPage() {
           <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shadow-lg shadow-primary/20">
             <Activity className="text-white h-6 w-6" />
           </div>
-          <span className="font-bold text-xl tracking-tight">OrthoVision AI</span>
+          <span className="font-heading font-bold text-xl tracking-tight">OrthoVision AI</span>
         </div>
         <Link href="/login" className="px-6 py-2 rounded-full glass hover:bg-white/10 transition-all font-medium text-sm">
           Sign In
@@ -28,7 +28,7 @@ export default function LandingPage() {
           <span>Next-Gen Orthodontic Diagnostics</span>
         </div>
 
-        <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-6 bg-clip-text text-transparent bg-gradient-to-b from-white to-white/60 max-w-4xl">
+        <h1 className="text-5xl md:text-7xl font-heading font-bold tracking-tight mb-6 bg-clip-text text-transparent bg-gradient-to-b from-white to-white/60 max-w-4xl">
           Automated Cephalometric Analysis in Seconds
         </h1>
 
@@ -56,7 +56,7 @@ export default function LandingPage() {
               <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4 text-primary">
                 <item.icon size={24} />
               </div>
-              <h3 className="font-bold text-lg mb-2">{item.title}</h3>
+              <h3 className="font-heading font-bold text-lg mb-2">{item.title}</h3>
               <p className="text-sm text-muted-foreground">{item.desc}</p>
             </div>
           ))}

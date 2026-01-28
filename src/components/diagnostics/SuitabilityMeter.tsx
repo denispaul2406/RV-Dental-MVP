@@ -59,7 +59,7 @@ export default function SuitabilityMeter({ val, label, isSuitable }: Suitability
             </div>
 
             <div className="mt-4 text-center">
-                <h3 className="text-lg font-semibold">{label}</h3>
+                <h3 className="text-lg font-heading font-semibold">{label}</h3>
                 <p className={clsx("text-sm font-medium", isSuitable ? "text-green-500" : "text-yellow-500")}>
                     {isSuitable ? "Suitable Candidate" : "Observe / Borderline"}
                 </p>

@@ -48,7 +48,7 @@ export default function LoginPage() {
             className="w-full max-w-md p-8 glass-card rounded-2xl text-foreground"
         >
             <div className="text-center mb-8">
-                <h1 className="text-3xl font-bold tracking-tight mb-2">Welcome Back</h1>
+                <h1 className="text-3xl font-heading font-bold tracking-tight mb-2">Welcome Back</h1>
                 <p className="text-muted-foreground">Sign in to access OrthoVision</p>
             </div>
 

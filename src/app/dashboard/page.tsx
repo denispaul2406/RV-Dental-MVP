@@ -75,7 +75,7 @@ export default function DashboardPage() {
             {/* Header */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">
+                    <h1 className="text-3xl font-heading font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">
                         Patient Dashboard
                     </h1>
                     <p className="text-muted-foreground mt-1">
@@ -211,7 +211,7 @@ export default function DashboardPage() {
 
                                 <div className="p-5">
                                     <div className="flex justify-between items-start mb-2">
-                                        <h3 className="font-semibold text-lg">{scan.patient || `Patient #${scan.id.slice(0, 4)}`}</h3>
+                                        <h3 className="font-heading font-semibold text-lg">{scan.patient || `Patient #${scan.id.slice(0, 4)}`}</h3>
                                         <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${scan.analysis?.suitable ? "bg-green-500/20 text-green-500" : "bg-yellow-500/20 text-yellow-500"
                                             }`}>
                                             {scan.analysis?.suitable ? "Suitable" : "Observe"}

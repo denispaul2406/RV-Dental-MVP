@@ -10,7 +10,7 @@ export default function SettingsPage() {
     return (
         <div className="space-y-8 max-w-4xl">
             <div>
-                <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">
+                <h1 className="text-3xl font-heading font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">
                     Settings
                 </h1>
                 <p className="text-muted-foreground mt-1">
@@ -30,7 +30,7 @@ export default function SettingsPage() {
                             <User size={24} />
                         </div>
                         <div>
-                            <h2 className="text-lg font-semibold">Profile Information</h2>
+                            <h2 className="text-lg font-heading font-semibold">Profile Information</h2>
                             <p className="text-sm text-muted-foreground">Update your personal details</p>
                         </div>
                     </div>
@@ -68,7 +68,7 @@ export default function SettingsPage() {
                             <Shield size={24} />
                         </div>
                         <div>
-                            <h2 className="text-lg font-semibold">Security & Privacy</h2>
+                            <h2 className="text-lg font-heading font-semibold">Security & Privacy</h2>
                             <p className="text-sm text-muted-foreground">Manage password and security settings</p>
                         </div>
                     </div>

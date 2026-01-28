@@ -103,7 +103,7 @@ export default function NewScanPage() {
     return (
         <div className="max-w-4xl mx-auto space-y-8">
             <div>
-                <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">
+                <h1 className="text-3xl font-heading font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">
                     New Analysis
                 </h1>
                 <p className="text-muted-foreground mt-1">
@@ -114,12 +114,12 @@ export default function NewScanPage() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <div className="space-y-6">
                     <div className="glass-card p-6 rounded-2xl">
-                        <h2 className="text-lg font-semibold mb-4">1. Upload Image</h2>
+                        <h2 className="text-lg font-heading font-semibold mb-4">1. Upload Image</h2>
                         <UploadZone onFileSelect={handleFileSelect} />
                     </div>
 
                     <div className="glass-card p-6 rounded-2xl space-y-4">
-                        <h2 className="text-lg font-semibold border-b border-border/50 pb-2">Patient Details</h2>
+                        <h2 className="text-lg font-heading font-semibold border-b border-border/50 pb-2">Patient Details</h2>
                         <div className="space-y-4">
                             <div>
                                 <label className="text-sm font-medium mb-1 block">Patient Name</label>
@@ -162,7 +162,7 @@ export default function NewScanPage() {
 
                 <div className="space-y-6">
                     <div className="glass-card p-6 rounded-2xl h-full flex flex-col">
-                        <h2 className="text-lg font-semibold mb-4">2. Review & Analyze</h2>
+                        <h2 className="text-lg font-heading font-semibold mb-4">2. Review & Analyze</h2>
 
                         <div className="flex-1 bg-muted/20 rounded-xl border border-dashed border-border/50 flex items-center justify-center relative overflow-hidden min-h-[300px]">
                             {!file ? (

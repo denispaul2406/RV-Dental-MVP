@@ -143,7 +143,7 @@ export default function PatientsPage() {
         <div className="space-y-8">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">
+                    <h1 className="text-3xl font-heading font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">
                         Patient Management
                     </h1>
                     <p className="text-muted-foreground mt-1">
@@ -193,7 +193,7 @@ export default function PatientsPage() {
                                         <User size={24} />
                                     </div>
                                     <div>
-                                        <h3 className="font-bold text-lg">{patient.name}</h3>
+                                        <h3 className="font-heading font-bold text-lg">{patient.name}</h3>
                                         <p className="text-sm text-muted-foreground">
                                             {patient.age} yrs • {patient.gender}
                                         </p>
@@ -247,7 +247,7 @@ export default function PatientsPage() {
                             className="glass-card p-6 rounded-2xl max-w-md w-full max-h-[90vh] overflow-y-auto"
                         >
                             <div className="flex items-center justify-between mb-6">
-                                <h2 className="text-2xl font-bold">
+                                <h2 className="text-2xl font-heading font-bold">
                                     {editingPatient ? "Edit Patient" : "Add Patient"}
                                 </h2>
                                 <button

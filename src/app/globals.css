@@ -37,7 +37,13 @@
   --color-border: var(--border);
   --color-input: var(--input);
 
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui;
+  --font-heading: var(--font-abril), serif;
+  --font-body: var(--font-lato), ui-sans-serif, system-ui;
+  --font-sans: var(--font-lato), ui-sans-serif, system-ui;
+  
+  /* Register font utilities for Tailwind */
+  --font-family-heading: var(--font-abril), serif;
+  --font-family-body: var(--font-lato), ui-sans-serif, system-ui;
 }
 
 /* Glassmorphism Utilities */
@@ -59,6 +65,55 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans);
+  font-family: var(--font-lato), "Lato", ui-sans-serif, system-ui;
+  font-weight: 400;
+  line-height: 1.6;
+}
 
+/* Ensure all headings use Abril Fatface - Direct CSS rules with high specificity */
+h1, h2, h3, h4, h5, h6,
+h1.font-bold, h2.font-bold, h3.font-bold, h4.font-bold, h5.font-bold, h6.font-bold,
+h1.font-semibold, h2.font-semibold, h3.font-semibold, h4.font-semibold, h5.font-semibold, h6.font-semibold {
+  font-family: var(--font-abril), "Abril Fatface", serif !important;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+/* Font utility classes - High specificity to override Tailwind */
+.font-heading,
+.font-heading.font-bold,
+.font-heading.font-semibold,
+.font-heading.font-medium,
+[class*="font-heading"] {
+  font-family: var(--font-abril), "Abril Fatface", serif !important;
+  letter-spacing: -0.02em;
+}
+
+.font-body,
+[class*="font-body"] {
+  font-family: var(--font-lato), "Lato", ui-sans-serif, system-ui !important;
+  font-weight: 400;
+}
+
+/* Enhanced button typography */
+button {
+  font-family: var(--font-lato), "Lato", ui-sans-serif, system-ui;
+  font-weight: 600;
+}
+
+/* Input and form elements */
+input, textarea, select {
+  font-family: var(--font-lato), "Lato", ui-sans-serif, system-ui;
+  font-weight: 400;
+}
+
+/* Labels */
+label {
+  font-family: var(--font-lato), "Lato", ui-sans-serif, system-ui;
+  font-weight: 500;
+}
+
+/* Debug: Verify fonts are loading - remove in production */
+@supports (font-family: var(--font-abril)) {
+  /* Fonts are loaded */
 }
