@@ -1,0 +1,60 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# env files (can opt-in for committing if needed)
+.env*
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# Dataset and training data (too large for GitHub)
+/data-model/dataset/
+/data-model/dataset_backup/
+/data-model/*.csv
+/data-model/*.pkl
+/data-model/*.ipynb
+/data-model/*.py
+/data-model/*.md
+
+# Documentation files (may contain sensitive info)
+/docs/
+*.pptx
+*.pdf
+
+# Keep model structure visible but not the actual files
+!/data-model/
+/data-model/*
+!/data-model/.gitkeep

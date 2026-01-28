@@ -1,0 +1,2 @@
+# This file ensures the data-model directory is tracked by git
+# Actual dataset files, models, and training data are excluded via .gitignore
