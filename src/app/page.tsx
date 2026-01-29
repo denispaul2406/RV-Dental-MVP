@@ -11,7 +11,7 @@ export default function LandingPage() {
         <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-accent/10 rounded-full blur-[128px]" />
       </div>
 
-      <nav className="absolute top-0 left-0 right-0 w-full px-4 py-3 sm:px-6 sm:py-4 flex justify-between items-center gap-3 z-10 max-w-[100vw] box-border">
+      <nav className="absolute top-0 left-0 right-0 w-full px-4 py-3 sm:px-6 sm:py-4 flex justify-between items-center gap-3 z-50 max-w-[100vw] box-border isolate">
         <div className="flex items-center gap-2 min-w-0 flex-shrink">
           <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-primary flex items-center justify-center shadow-lg shadow-primary/20 shrink-0">
             <Activity className="text-white h-4 w-4 sm:h-6 sm:w-6" />
@@ -26,7 +26,7 @@ export default function LandingPage() {
         </div>
       </nav>
 
-      <main className="container mx-auto px-4 sm:px-6 relative z-10 flex flex-col items-center text-center w-full max-w-[100vw] box-border">
+      <main className="container mx-auto px-4 sm:px-6 relative z-0 flex flex-col items-center text-center w-full max-w-[100vw] box-border pt-16 sm:pt-20">
         <div className="inline-flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full glass border-primary/20 bg-primary/5 text-primary text-xs sm:text-sm font-medium mb-6 sm:mb-8 animate-fade-in-up max-w-full">
           <Zap size={16} className="shrink-0" />
           <span className="truncate max-w-[calc(100vw-8rem)] sm:max-w-none">Next-Gen Orthodontic Diagnostics</span>

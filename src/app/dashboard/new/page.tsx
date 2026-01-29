@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import UploadZone from "@/components/dashboard/UploadZone";
 import { ArrowRight, Loader2 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -19,7 +19,7 @@ interface Patient {
     phone?: string;
 }
 
-export default function NewScanPage() {
+function NewScanPageContent() {
     const { user } = useAuth();
     const [file, setFile] = useState<File | null>(null);
     const [patients, setPatients] = useState<Patient[]>([]);
@@ -259,5 +259,17 @@ export default function NewScanPage() {
                 </div>
             </div>
         </div>
+    );
+}
+
+export default function NewScanPage() {
+    return (
+        <Suspense fallback={
+            <div className="max-w-4xl mx-auto flex items-center justify-center py-20">
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            </div>
+        }>
+            <NewScanPageContent />
+        </Suspense>
     );
 }
