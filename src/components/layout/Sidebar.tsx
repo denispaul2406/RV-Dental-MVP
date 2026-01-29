@@ -4,14 +4,15 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { LayoutDashboard, PlusCircle, Settings, LogOut, ChevronLeft, ChevronRight, Activity, Users } from "lucide-react";
+import { PlusCircle, Settings, LogOut, ChevronLeft, ChevronRight, Activity, Users, BookOpen } from "lucide-react";
 import { useAuth } from "@/components/providers/AuthProvider";
+import ThemeToggle from "@/components/layout/ThemeToggle";
 import clsx from "clsx";
 
 const navItems = [
-    { icon: LayoutDashboard, label: "Dashboard", href: "/dashboard" },
-    { icon: PlusCircle, label: "New Scan", href: "/dashboard/new" },
     { icon: Users, label: "Patients", href: "/dashboard/patients" },
+    { icon: PlusCircle, label: "New Scan", href: "/dashboard/new" },
+    { icon: BookOpen, label: "Malocclusions & Guide", href: "/dashboard/guide" },
     { icon: Settings, label: "Settings", href: "/dashboard/settings" },
 ];
 
@@ -36,7 +37,7 @@ export default function Sidebar() {
                         exit={{ opacity: 0 }}
                         className="font-heading font-bold text-lg tracking-tight whitespace-nowrap"
                     >
-                        OrthoVision AI
+                        InsightCeph
                     </motion.span>
                 )}
             </div>
@@ -79,7 +80,8 @@ export default function Sidebar() {
                 })}
             </nav>
 
-            <div className="p-4 border-t border-border/50">
+            <div className="p-4 border-t border-border/50 space-y-2">
+                <ThemeToggle iconOnly={isCollapsed} />
                 <button
                     onClick={logout}
                     className={clsx(

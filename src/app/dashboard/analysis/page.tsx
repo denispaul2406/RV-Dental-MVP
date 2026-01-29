@@ -16,8 +16,11 @@ import { useAuth } from "@/components/providers/AuthProvider";
 function AnalysisPageContent() {
     const { user } = useAuth();
     const searchParams = useSearchParams();
-    const scanId = searchParams.get("id");
-    
+    const legacyScanId = searchParams.get("id");
+    const patientDocId = searchParams.get("patientId");
+    const patientScanId = searchParams.get("scanId");
+    const scanId = patientScanId ?? legacyScanId;
+
     const [landmarks, setLandmarks] = useState<Record<string, Point>>({});
     const [imageSrc, setImageSrc] = useState<string>("https://placehold.co/800x1000/111/FFF?text=Lateral+Ceph+X-Ray");
     const [anb, setAnb] = useState(0);
@@ -30,29 +33,30 @@ function AnalysisPageContent() {
     const [geminiAnb, setGeminiAnb] = useState<number | null>(null); // Store Gemini's original ANB
     const [landmarksManuallyAdjusted, setLandmarksManuallyAdjusted] = useState(false); // Track if user adjusted landmarks
 
-    // Load data from Firestore if scanId exists, otherwise from sessionStorage
+    // Load data from Firestore (legacy or patient subcollection) or sessionStorage
     useEffect(() => {
         const loadData = async () => {
             if (scanId && user) {
-                // Load from Firestore
                 try {
-                    const scanDoc = await getDoc(doc(db, "patients", user.uid, "scans", scanId));
+                    const scanRef =
+                        patientDocId && patientScanId
+                            ? doc(db, "patients", user.uid, "patientList", patientDocId, "scans", patientScanId)
+                            : doc(db, "patients", user.uid, "scans", scanId);
+                    const scanDoc = await getDoc(scanRef);
                     if (scanDoc.exists()) {
                         const data = scanDoc.data();
                         setIsExistingScan(true);
-                        
                         setPatientDetails({
                             name: data.patient || "Unknown",
                             age: data.patientAge || "",
-                            gender: data.patientGender || ""
+                            gender: data.patientGender || "",
                         });
-                        
                         if (data.imageUrl) setImageSrc(data.imageUrl);
                         if (data.landmarks) setLandmarks(data.landmarks);
                         if (data.analysis) {
                             const geminiAnbValue = data.analysis.anb || 0;
                             setGeminiAnb(geminiAnbValue);
-                            setAnb(geminiAnbValue); // Use Gemini's ANB initially
+                            setAnb(geminiAnbValue);
                             setOverjet(data.analysis.overjet || 0);
                             setIsSuitable(data.analysis.suitable || false);
                         }
@@ -60,7 +64,7 @@ function AnalysisPageContent() {
                 } catch (error) {
                     console.error("Error loading scan:", error);
                 }
-            } else {
+            } else if (!scanId) {
                 // Load from sessionStorage (new analysis)
                 const storedImage = sessionStorage.getItem("current_analysis_image");
                 const storedLandmarks = sessionStorage.getItem("current_analysis_landmarks");
@@ -100,7 +104,7 @@ function AnalysisPageContent() {
         };
 
         loadData();
-    }, [scanId, user]);
+    }, [scanId, user, patientDocId, patientScanId]);
 
     // Initialize ANB from Gemini's value when data loads (only once)
     useEffect(() => {
@@ -160,10 +164,13 @@ function AnalysisPageContent() {
     const handleSave = async () => {
         if (!user) return alert("You must be logged in to save.");
         if (!scanId) return alert("No scan ID found.");
-        
         setSaving(true);
         try {
-            await updateDoc(doc(db, "patients", user.uid, "scans", scanId), {
+            const scanRef =
+                patientDocId && patientScanId
+                    ? doc(db, "patients", user.uid, "patientList", patientDocId, "scans", patientScanId)
+                    : doc(db, "patients", user.uid, "scans", scanId);
+            await updateDoc(scanRef, {
                 patient: patientDetails.name,
                 patientAge: patientDetails.age,
                 patientGender: patientDetails.gender,
@@ -172,9 +179,9 @@ function AnalysisPageContent() {
                     anb,
                     overjet,
                     suitable: isSuitable,
-                    message: isSuitable ? "Functional Recommended" : "Routine"
+                    message: isSuitable ? "Functional Recommended" : "Routine",
                 },
-                updatedAt: serverTimestamp()
+                updatedAt: serverTimestamp(),
             });
             alert("Analysis updated successfully!");
         } catch (e) {
@@ -222,10 +229,13 @@ function AnalysisPageContent() {
                         landmarks.S && landmarks.N && landmarks.A && landmarks.B;
 
     return (
-        <div className="space-y-6 h-full flex flex-col">
-            <div className="flex items-center justify-between shrink-0">
+        <div className="flex flex-col min-h-0 h-[calc(100vh-4rem)] gap-4">
+            <div className="flex items-center justify-between shrink-0 gap-2">
                 <div className="flex items-center gap-4">
-                    <Link href="/dashboard" className="p-2 hover:bg-accent/10 rounded-full transition-colors">
+                    <Link
+                        href={patientDocId ? `/dashboard/patients/${patientDocId}` : "/dashboard/patients"}
+                        className="p-2 hover:bg-accent/10 rounded-full transition-colors"
+                    >
                         <ArrowLeft size={20} />
                     </Link>
                     <div>
@@ -255,19 +265,20 @@ function AnalysisPageContent() {
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 flex-1 min-h-0">
-                {/* Main Viewer */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 flex-1 min-h-0 overflow-hidden">
+                {/* Main Viewer - fills available height so X-ray fits without scroll */}
                 <motion.div
                     initial={{ opacity: 0, scale: 0.98 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    className="lg:col-span-2 glass-card p-1 rounded-2xl flex flex-col"
+                    className="lg:col-span-2 glass-card p-1 rounded-2xl flex flex-col min-h-0 overflow-hidden"
                 >
-                    <div className="flex-1 bg-black/40 rounded-xl overflow-hidden relative">
+                    <div className="flex-1 min-h-0 bg-black/40 rounded-xl overflow-hidden relative flex flex-col">
                         {hasLandmarks ? (
                             <ImageViewer
                                 imageSrc={imageSrc}
                                 landmarks={landmarks}
                                 onLandmarkChange={handleLandmarkChange}
+                                fillContainer
                             />
                         ) : (
                             <div className="absolute inset-0 flex flex-col items-center justify-center text-white p-8">
@@ -287,25 +298,6 @@ function AnalysisPageContent() {
                                 </div>
                             </div>
                         )}
-
-                        {/* Results Box Overlay - Top Left */}
-                        <div className="absolute top-4 left-4 bg-white border-2 border-black px-4 py-3 rounded-lg shadow-xl pointer-events-none z-30">
-                            <div className="text-black font-bold text-sm space-y-1">
-                                <div>ANB Angle: {anb.toFixed(2)}°</div>
-                                <div>Overjet: {overjet.toFixed(2)}mm</div>
-                            </div>
-                            {/* Debug info - remove in production */}
-                            {process.env.NODE_ENV === 'development' && (
-                                <div className="mt-2 pt-2 border-t border-gray-300 text-xs text-gray-600">
-                                    <div>Landmarks:</div>
-                                    {Object.entries(landmarks).map(([name, point]) => (
-                                        <div key={name} className="font-mono">
-                                            {name}: ({point.x.toFixed(1)}%, {point.y.toFixed(1)}%)
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
-                        </div>
 
                         {/* Instructions Overlay */}
                         <div className="absolute bottom-4 left-4 bg-black/60 backdrop-blur px-3 py-2 rounded-lg text-xs text-white max-w-xs pointer-events-none">
@@ -333,9 +325,9 @@ function AnalysisPageContent() {
                         </div>
                     </div>
 
-                    {/* Clinical Criteria Checklist */}
-                    <div className="glass-card p-6 rounded-2xl space-y-4">
-                        <h3 className="font-heading font-semibold text-lg border-b border-border pb-2">Clinical Criteria</h3>
+                    {/* Clinical Criteria Checklist - highlighted */}
+                    <div className="glass-card p-6 rounded-2xl space-y-4 bg-primary/5 border-2 border-primary/30 ring-1 ring-primary/10">
+                        <h3 className="font-heading font-semibold text-lg border-b border-primary/20 pb-2 text-primary">Clinical Criteria</h3>
                         <div className="space-y-3">
                             <div className="flex items-center justify-between">
                                 <span className="text-sm">ANB &gt; 4.5°</span>
@@ -401,6 +393,33 @@ function AnalysisPageContent() {
                     </div>
                 </div>
             </div>
+
+            {/* Definitions - Landmarks & metrics for easier understanding */}
+            <details className="glass-card rounded-2xl overflow-hidden border border-border/50 group">
+                <summary className="px-6 py-4 cursor-pointer list-none font-heading font-semibold text-lg border-b border-border/50 bg-muted/20 hover:bg-muted/30 transition-colors flex items-center gap-2">
+                    <span className="group-open:rotate-90 transition-transform inline-block">▶</span>
+                    Definitions — Landmarks &amp; metrics
+                </summary>
+                <div className="p-6 pt-4 space-y-6 text-sm text-muted-foreground">
+                    <div>
+                        <h4 className="font-semibold text-foreground mb-2">Landmarks (S, N, A, B)</h4>
+                        <ul className="space-y-1.5">
+                            <li><strong className="text-foreground">S (Sella):</strong> The center of the sella turcica — the bony saddle in the sphenoid bone. Reference point for the cranial base.</li>
+                            <li><strong className="text-foreground">N (Nasion):</strong> The most anterior point of the frontonasal suture where the nose meets the forehead. Used to define the upper face.</li>
+                            <li><strong className="text-foreground">A (Point A / Subspinale):</strong> The deepest midline point on the anterior curvature of the maxilla (upper jaw), between the nose and upper incisors.</li>
+                            <li><strong className="text-foreground">B (Point B / Supramentale):</strong> The deepest midline point on the anterior curvature of the mandible (lower jaw), between the lower incisors and chin.</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 className="font-semibold text-foreground mb-2">ANB Angle</h4>
+                        <p>The angle between points A, N, and B. It describes the sagittal relationship between the maxilla and mandible. <strong className="text-foreground">Class I:</strong> 0°–4°; <strong className="text-foreground">Class II:</strong> &gt;4° (maxilla ahead); <strong className="text-foreground">Class III:</strong> &lt;0° (mandible ahead). Used here to assess suitability for functional appliance therapy.</p>
+                    </div>
+                    <div>
+                        <h4 className="font-semibold text-foreground mb-2">Overjet</h4>
+                        <p>The horizontal distance (in mm) between the upper and lower incisors — how far the upper front teeth protrude ahead of the lower. Positive overjet is normal; increased overjet is common in Class II and is one criterion for functional appliance consideration.</p>
+                    </div>
+                </div>
+            </details>
         </div>
     );
 }

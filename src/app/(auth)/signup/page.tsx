@@ -6,7 +6,7 @@ import { useAuth } from "@/components/providers/AuthProvider";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { Mail, Lock, Loader2, User as UserIcon } from "lucide-react";
+import { Mail, Lock, Loader2 } from "lucide-react";
 
 export default function SignupPage() {
     const { signupWithEmail, signInWithGoogle } = useAuth();
@@ -43,13 +43,19 @@ export default function SignupPage() {
 
     return (
         <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="w-full max-w-md p-8 glass-card rounded-2xl text-foreground"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.35 }}
+            className="w-full max-w-md p-8 glass-card rounded-2xl text-foreground border border-white/[0.06] shadow-xl shadow-black/20"
         >
+            <div className="flex justify-center mb-6">
+                <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium">
+                    InsightCeph
+                </span>
+            </div>
             <div className="text-center mb-8">
                 <h1 className="text-3xl font-heading font-bold tracking-tight mb-2">Create Account</h1>
-                <p className="text-muted-foreground">Join OrthoVision AI today</p>
+                <p className="text-muted-foreground">Join InsightCeph today</p>
             </div>
 
             {error && (

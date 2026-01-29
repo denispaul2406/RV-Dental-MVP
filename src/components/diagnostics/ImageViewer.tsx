@@ -9,9 +9,11 @@ interface ImageViewerProps {
     imageSrc: string;
     landmarks: Record<string, Point>;
     onLandmarkChange: (name: string, newPoint: Point) => void;
+    /** When true, viewer fills container so full X-ray is visible without scrolling */
+    fillContainer?: boolean;
 }
 
-export default function ImageViewer({ imageSrc, landmarks, onLandmarkChange }: ImageViewerProps) {
+export default function ImageViewer({ imageSrc, landmarks, onLandmarkChange, fillContainer }: ImageViewerProps) {
     const containerRef = useRef<HTMLDivElement>(null);
     const [zoom, setZoom] = useState(1);
     const [pan, setPan] = useState({ x: 0, y: 0 });
@@ -74,7 +76,7 @@ export default function ImageViewer({ imageSrc, landmarks, onLandmarkChange }: I
     return (
         <div
             ref={containerRef}
-            className="relative w-full aspect-[3/4] bg-black rounded-xl overflow-hidden shadow-2xl border border-white/10"
+            className={`relative w-full bg-black rounded-xl overflow-hidden shadow-2xl border border-white/10 ${fillContainer ? "h-full min-h-0" : "aspect-[3/4]"}`}
             onWheel={handleWheel}
             onMouseDown={handleMouseDown}
             onMouseMove={handleMouseMove}

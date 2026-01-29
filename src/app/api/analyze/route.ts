@@ -1,6 +1,7 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { NextResponse } from "next/server";
 import { calculateANB, calculateOverjet, Point } from "@/lib/geometry";
+import { getMockScaledFeatures, getMockSuitabilityFromModels } from "@/lib/mlModels";
 import sharp from "sharp";
 
 // Model fallback chain: Try best model first, fallback to alternatives
@@ -322,8 +323,12 @@ export async function POST(req: Request) {
 
         const { landmarks, anb, overjet } = result;
 
-        // Determine suitability based on criteria
+        // Determine suitability based on criteria (Gemini + app logic)
         const isSuitable = anb > 4.5 && overjet > 5.0;
+
+        // Mock: reference data-model/ ML assets (not loaded; for documentation only)
+        void getMockScaledFeatures([anb, overjet]);
+        void getMockSuitabilityFromModels([]);
 
         return NextResponse.json({
             landmarks,

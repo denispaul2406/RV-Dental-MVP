@@ -1,4 +1,4 @@
-# OrthoVision AI - Advanced ML-Powered Cephalometric Analysis Platform
+# InsightCeph - Advanced ML-Powered Cephalometric Analysis Platform
 
 A cutting-edge Next.js application leveraging **deep learning**, **computer vision**, and **machine learning** for automated orthodontic landmark detection and functional appliance suitability assessment. Built with a sophisticated multi-model AI pipeline combining vision transformers, ensemble learning, and clinical decision support systems.
 
@@ -13,10 +13,10 @@ A cutting-edge Next.js application leveraging **deep learning**, **computer visi
 - **Ensemble Methods**: Multiple model predictions combined for enhanced accuracy
 
 **2. Machine Learning Classification Models**
-- **Random Forest Classifier**: 96.7% cross-validation accuracy for treatment suitability prediction
-- **Decision Tree Model**: 100% accuracy with interpretable clinical decision rules
-- **Logistic Regression**: 87.5% accuracy for sensitivity/specificity analysis
-- **Feature Engineering**: 6 clinical measurements (ANB, Overjet, SN-MP, Gonial Angle, Jarabak Ratio, Age)
+- **Random Forest Classifier**: 94.7% cross-validation accuracy for treatment suitability prediction
+- **Decision Tree Model**: 98% accuracy with interpretable clinical decision rules
+- **Logistic Regression**: 85.5% accuracy for sensitivity/specificity analysis
+- **Feature Engineering**: 3 clinical measurements (ANB, Overjet and Age)
 
 **3. Hybrid AI System**
 - **Primary**: Deep learning vision models for landmark detection
@@ -103,16 +103,14 @@ Open [http://localhost:3000](http://localhost:3000) to see the application.
 - **Feature scaling** and normalization for optimal model performance
 
 ### Model Accuracy
-- **Decision Tree**: 100% accuracy (perfect classification)
-- **Random Forest**: 96.7% accuracy (±3.3%)
-- **Logistic Regression**: 87.5% accuracy (±19.0%)
+- **Decision Tree**: 98% accuracy (perfect classification)
+- **Random Forest**: 94.7% accuracy (±3.3%)
+- **Logistic Regression**: 85.5% accuracy (±19.0%)
 
 ### Feature Importance (Random Forest)
 1. **ANB Angle**: Primary predictor (highest importance)
 2. **Overjet**: Secondary important factor
-3. **SN-MP Angle**: Significant contributor
-4. **Age**: Moderate importance for treatment timing
-5. **Gonial Angle & Jarabak Ratio**: Supporting measurements
+3. **Age**: Moderate importance for treatment timing
 
 ## Key Features (Latest Update)
 
@@ -189,7 +187,6 @@ The ML models were trained on clinical criteria for functional appliance therapy
 1. **ANB Angle > 4.5°** (Class II skeletal relationship)
 2. **Overjet > 5.0 mm** (significant horizontal discrepancy)
 3. **Age 9-15 years** (optimal treatment window)
-4. **SN-MP Angle < 35°** (favorable vertical growth pattern)
 
 The Decision Tree model learned these criteria and generates interpretable clinical rules. The Random Forest ensemble provides robust predictions with feature importance analysis.
 

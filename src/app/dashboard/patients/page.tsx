@@ -7,9 +7,11 @@ import { collection, query, onSnapshot, addDoc, updateDoc, deleteDoc, doc, Times
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus, Search, Edit, Trash2, User, X, Save } from "lucide-react";
 import Link from "next/link";
+import { getNextPatientId, getNextPatientIdsForMigration } from "@/lib/patientId";
 
 interface Patient {
     id: string;
+    patientId?: string;
     name: string;
     age: string;
     gender: string;
@@ -40,13 +42,38 @@ export default function PatientsPage() {
         if (!user) return;
 
         const q = query(collection(db, "patients", user.uid, "patientList"));
-        const unsubscribe = onSnapshot(q, (snapshot) => {
-            const patientData = snapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data()
+        const unsubscribe = onSnapshot(q, async (snapshot) => {
+            const patientData = snapshot.docs.map((d) => ({
+                id: d.id,
+                ...d.data()
             } as Patient));
-            setPatients(patientData);
+            const sorted = [...patientData].sort((a, b) => {
+                const ta = a.createdAt?.toMillis?.() ?? 0;
+                const tb = b.createdAt?.toMillis?.() ?? 0;
+                return ta - tb;
+            });
+            setPatients(sorted);
             setLoading(false);
+
+            // Migration: assign patientId (P-2026-NNNN) to any patient that doesn't have one (oldest first)
+            const withoutId = sorted.filter((p) => !p.patientId);
+            if (withoutId.length > 0) {
+                const withId = sorted.filter((p) => p.patientId);
+                const newIds = getNextPatientIdsForMigration(
+                    withoutId.map((p) => ({ id: p.id, createdAt: p.createdAt })),
+                    withId.map((p) => p.patientId!)
+                );
+                for (let i = 0; i < withoutId.length; i++) {
+                    try {
+                        await updateDoc(
+                            doc(db, "patients", user.uid, "patientList", withoutId[i].id),
+                            { patientId: newIds[i] }
+                        );
+                    } catch (e) {
+                        console.error("Migration patientId failed for", withoutId[i].id, e);
+                    }
+                }
+            }
         });
 
         return () => unsubscribe();
@@ -107,9 +134,11 @@ export default function PatientsPage() {
                     updatedAt: Timestamp.now()
                 });
             } else {
-                // Create new patient
+                // Create new patient with automated patientId (P-2026-NNNN)
+                const nextId = getNextPatientId(patients);
                 await addDoc(collection(db, "patients", user.uid, "patientList"), {
                     ...formData,
+                    patientId: nextId,
                     createdAt: Timestamp.now()
                 });
             }
@@ -195,7 +224,7 @@ export default function PatientsPage() {
                                     <div>
                                         <h3 className="font-heading font-bold text-lg">{patient.name}</h3>
                                         <p className="text-sm text-muted-foreground">
-                                            {patient.age} yrs • {patient.gender}
+                                            {patient.patientId ?? "—"} • {patient.age} yrs • {patient.gender}
                                         </p>
                                     </div>
                                 </div>
@@ -226,7 +255,7 @@ export default function PatientsPage() {
                             )}
 
                             <Link
-                                href={`/dashboard?patient=${patient.id}`}
+                                href={`/dashboard/patients/${patient.id}`}
                                 className="mt-4 inline-block text-sm text-primary hover:text-primary/80 font-medium"
                             >
                                 View Scans →
